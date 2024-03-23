@@ -67,9 +67,6 @@ jobs:
       - name: Build Linux arm64
         run: dotnet publish -r linux-arm64 -p:PublishSingleFile=true
 
-      - name: Build Linux bionic arm64
-        run: dotnet publish -r linux-bionic-arm64 -p:PublishSingleFile=true
-
       - name: Build macOS x64
         run: dotnet publish -r osx-x64 -p:PublishSingleFile=true
 
@@ -169,16 +166,6 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./LyricsFinder/bin/Release/net8.0/linux-arm64/publish/LyricsFinder
           asset_name: LyricsFinder-linux-arm64
-          asset_content_type: application/file
-
-      - name: Upload Linux bionic arm64 File
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./LyricsFinder/bin/Release/net8.0/linux-bionic-arm64/publish/LyricsFinder
-          asset_name: LyricsFinder-linux-bionic-arm64
           asset_content_type: application/file
 
       - name: Upload macOS x64 File
