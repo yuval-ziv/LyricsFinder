@@ -9,14 +9,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Project
+        uses: actions/checkout@v4
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
 
-      - name: Restore dependencies
+      - name: Restore Dependencies
         run: dotnet restore
 
       - name: Build
@@ -25,24 +26,32 @@ jobs:
       - name: Test
         run: dotnet test --no-build --verbosity normal
 
-
-      - name: Bump build version
+      - name: Bump Project Version
         id: bump
         uses: vers-one/dotnet-project-version-updater@v1.5
         with:
           file: "**/*.csproj"
           version: bump-build
 
-      - run: |
+      - name: Push New Version
+        run: |
           git config user.name "Yuval Ziv"
           git config user.email "yuval-ziv@users.noreply.github.com"
           git add .
           git commit -m "Bump project version to ${{ steps.bump.outputs.newVersion }}"
           git push
 
-      - name: Build EXE
+      - name: Build Windows x64
         id: build-exe
         run: dotnet publish -r win-x64 -p:PublishSingleFile=true
+
+      - name: Build Windows x32
+        id: build-exe
+        run: dotnet publish -r win-x32 -p:PublishSingleFile=true
+
+      - name: Build Linux
+        id: build-exe
+        run: dotnet publish -r linux-x64 -p:PublishSingleFile=true
 
       - name: Create Draft Release
         id: create_release
@@ -55,16 +64,48 @@ jobs:
           draft: true
           prerelease: false
 
-      - uses: actions/upload-release-asset@v1.0.1
+      - name: Upload Windows x64 File
+        uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./LyricsFinder/bin/Release/net8.0/win-x64/LyricsFinder.exe
+          asset_path: ./LyricsFinder/bin/Release/net8.0/win-x64/publish/LyricsFinder.exe
           asset_name: LyricsFinder-x64.exe
           asset_content_type: application/exe
 
-      - uses: eregon/publish-release@v1
+      - name: Upload Windows 32 File
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./LyricsFinder/bin/Release/net8.0/win-x32/publish/LyricsFinder.exe
+          asset_name: LyricsFinder-x32.exe
+          asset_content_type: application/exe
+
+      - name: Upload Linux File
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./LyricsFinder/bin/Release/net8.0/linux-x64/publish/LyricsFinder
+          asset_name: LyricsFinder
+          asset_content_type: application/file
+
+      - name: Upload appsettings.json File
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./LyricsFinder/bin/Release/net8.0/win-x64/publish/appsettings.json
+          asset_name: appsettings.json
+          asset_content_type: application/json
+
+      - name: Publish Release
+        uses: eregon/publish-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
