@@ -174,7 +174,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./LyricsFinder/bin/Release/net8.0/osx-x64/publish/LyricsFinder.exe
+          asset_path: ./LyricsFinder/bin/Release/net8.0/osx-x64/publish/LyricsFinder
           asset_name: LyricsFinder-osx-x64.exe
           asset_content_type: application/exe
 
@@ -184,7 +184,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./LyricsFinder/bin/Release/net8.0/osx-arm64/publish/LyricsFinder.exe
+          asset_path: ./LyricsFinder/bin/Release/net8.0/osx-arm64/publish/LyricsFinder
           asset_name: LyricsFinder-osx-arm64.exe
           asset_content_type: application/exe
 
