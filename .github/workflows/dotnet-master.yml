@@ -34,8 +34,8 @@ jobs:
           version: bump-build
 
       - run: |
-          git config user.name "Lyrics Finder"
-          git config user.email "lyrics-finder@users.noreply.github.com"
+          git config user.name "Yuval Ziv"
+          git config user.email "yuval-ziv@users.noreply.github.com"
           git add .
           git commit -m "Bump project version to ${{ steps.bump.outputs.newVersion }}"
           git push
