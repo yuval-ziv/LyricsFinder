@@ -41,17 +41,42 @@ jobs:
           git commit -m "Bump project version to ${{ steps.bump.outputs.newVersion }}"
           git push
 
+
+
       - name: Build Windows x64
         run: dotnet publish -r win-x64 -p:PublishSingleFile=true
 
-      - name: Build Windows x32
-        run: dotnet publish -r win -p:PublishSingleFile=true
+      - name: Build Windows x86
+        run: dotnet publish -r win-x86 -p:PublishSingleFile=true
+
+      - name: Build Windows arm64
+        run: dotnet publish -r win-arm64 -p:PublishSingleFile=true
 
       - name: Build Linux x64
         run: dotnet publish -r linux-x64 -p:PublishSingleFile=true
 
-      - name: Build Linux x32
-        run: dotnet publish -r linux -p:PublishSingleFile=true
+      - name: Build Linux musl x64
+        run: dotnet publish -r linux-musl-x64 -p:PublishSingleFile=true
+
+      - name: Build Linux musl arm64
+        run: dotnet publish -r linux-musl-arm64 -p:PublishSingleFile=true
+
+      - name: Build Linux arm
+        run: dotnet publish -r linux-arm -p:PublishSingleFile=true
+
+      - name: Build Linux arm64
+        run: dotnet publish -r linux-arm64 -p:PublishSingleFile=true
+
+      - name: Build Linux bionic arm64
+        run: dotnet publish -r linux-bionic-arm64 -p:PublishSingleFile=true
+
+      - name: Build macOS x64
+        run: dotnet publish -r osx-x64 -p:PublishSingleFile=true
+
+      - name: Build macOS arm64
+        run: dotnet publish -r osx-arm64 -p:PublishSingleFile=true
+
+
 
       - name: Create Draft Release
         id: create_release
@@ -64,6 +89,8 @@ jobs:
           draft: true
           prerelease: false
 
+
+
       - name: Upload Windows x64 File
         uses: actions/upload-release-asset@v1.0.1
         env:
@@ -71,17 +98,27 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./LyricsFinder/bin/Release/net8.0/win-x64/publish/LyricsFinder.exe
-          asset_name: LyricsFinder-x64.exe
+          asset_name: LyricsFinder-win-x64.exe
           asset_content_type: application/exe
 
-      - name: Upload Windows x32 File
+      - name: Upload Windows x86 File
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./LyricsFinder/bin/Release/net8.0/win/publish/LyricsFinder.exe
-          asset_name: LyricsFinder-x32.exe
+          asset_path: ./LyricsFinder/bin/Release/net8.0/win-x86/publish/LyricsFinder.exe
+          asset_name: LyricsFinder-win-x86.exe
+          asset_content_type: application/exe
+
+      - name: Upload Windows arm64 File
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./LyricsFinder/bin/Release/net8.0/win-arm64/publish/LyricsFinder.exe
+          asset_name: LyricsFinder-win-arm64.exe
           asset_content_type: application/exe
 
       - name: Upload Linux x64 File
@@ -91,28 +128,80 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./LyricsFinder/bin/Release/net8.0/linux-x64/publish/LyricsFinder
-          asset_name: LyricsFinder
+          asset_name: LyricsFinder-linux-x64
           asset_content_type: application/file
 
-      - name: Upload Linux x32 File
+      - name: Upload Linux musl x64 File
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./LyricsFinder/bin/Release/net8.0/linux/publish/LyricsFinder
-          asset_name: LyricsFinder-x32
+          asset_path: ./LyricsFinder/bin/Release/net8.0/linux-musl-x64/publish/LyricsFinder
+          asset_name: LyricsFinder-linux-musl-x64
           asset_content_type: application/file
 
-      - name: Upload appsettings.json File
+      - name: Upload Linux musl arm64 File
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./LyricsFinder/bin/Release/net8.0/win-x64/publish/appsettings.json
-          asset_name: appsettings.json
-          asset_content_type: application/json
+          asset_path: ./LyricsFinder/bin/Release/net8.0/linux-musl-arm64/publish/LyricsFinder
+          asset_name: LyricsFinder-linux-musl-arm64
+          asset_content_type: application/file
+
+      - name: Upload Linux arm File
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./LyricsFinder/bin/Release/net8.0/linux-arm/publish/LyricsFinder
+          asset_name: LyricsFinder-linux-arm
+          asset_content_type: application/file
+
+      - name: Upload Linux arm64 File
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./LyricsFinder/bin/Release/net8.0/linux-arm64/publish/LyricsFinder
+          asset_name: LyricsFinder-linux-arm64
+          asset_content_type: application/file
+
+      - name: Upload Linux bionic arm64 File
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./LyricsFinder/bin/Release/net8.0/linux-bionic-arm64/publish/LyricsFinder
+          asset_name: LyricsFinder-linux-bionic-arm64
+          asset_content_type: application/file
+
+      - name: Upload macOS x64 File
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./LyricsFinder/bin/Release/net8.0/osx-x64/publish/LyricsFinder.exe
+          asset_name: LyricsFinder-osx-x64.exe
+          asset_content_type: application/exe
+
+      - name: Upload macOS arm64 File
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./LyricsFinder/bin/Release/net8.0/osx-arm64/publish/LyricsFinder.exe
+          asset_name: LyricsFinder-osx-arm64.exe
+          asset_content_type: application/exe
+
+
 
       - name: Publish Release
         uses: eregon/publish-release@v1
