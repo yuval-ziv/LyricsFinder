@@ -45,10 +45,13 @@ jobs:
         run: dotnet publish -r win-x64 -p:PublishSingleFile=true
 
       - name: Build Windows x32
-        run: dotnet publish -r win-x32 -p:PublishSingleFile=true
+        run: dotnet publish -r win -p:PublishSingleFile=true
 
-      - name: Build Linux
+      - name: Build Linux x64
         run: dotnet publish -r linux-x64 -p:PublishSingleFile=true
+
+      - name: Build Linux x32
+        run: dotnet publish -r linux -p:PublishSingleFile=true
 
       - name: Create Draft Release
         id: create_release
@@ -71,17 +74,17 @@ jobs:
           asset_name: LyricsFinder-x64.exe
           asset_content_type: application/exe
 
-      - name: Upload Windows 32 File
+      - name: Upload Windows x32 File
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./LyricsFinder/bin/Release/net8.0/win-x32/publish/LyricsFinder.exe
+          asset_path: ./LyricsFinder/bin/Release/net8.0/win/publish/LyricsFinder.exe
           asset_name: LyricsFinder-x32.exe
           asset_content_type: application/exe
 
-      - name: Upload Linux File
+      - name: Upload Linux x64 File
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -89,6 +92,16 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./LyricsFinder/bin/Release/net8.0/linux-x64/publish/LyricsFinder
           asset_name: LyricsFinder
+          asset_content_type: application/file
+
+      - name: Upload Linux x32 File
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./LyricsFinder/bin/Release/net8.0/linux/publish/LyricsFinder
+          asset_name: LyricsFinder-x32
           asset_content_type: application/file
 
       - name: Upload appsettings.json File
