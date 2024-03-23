@@ -6,6 +6,8 @@ on:
     paths-ignore:
       - '**/README.md'
       - '**/LICENSE'
+      - '**/.github/*'
+      - '!**/.github/workflows/*'
 
 jobs:
   build-and-test:

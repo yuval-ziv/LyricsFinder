@@ -3,6 +3,11 @@ name: build and test
 on:
   push:
     branches: [ "**", "!master" ]
+    paths-ignore:
+      - '**/README.md'
+      - '**/LICENSE'
+      - '**/.github/*'
+      - '!**/.github/workflows/*'
 
 jobs:
   build-and-test:
