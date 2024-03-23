@@ -42,15 +42,12 @@ jobs:
           git push
 
       - name: Build Windows x64
-        id: build-exe
         run: dotnet publish -r win-x64 -p:PublishSingleFile=true
 
       - name: Build Windows x32
-        id: build-exe
         run: dotnet publish -r win-x32 -p:PublishSingleFile=true
 
       - name: Build Linux
-        id: build-exe
         run: dotnet publish -r linux-x64 -p:PublishSingleFile=true
 
       - name: Create Draft Release
