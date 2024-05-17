@@ -64,12 +64,19 @@ public partial class ShironetLyricsProvider(ILogger<ShironetLyricsProvider> logg
         string searchUrl = apiInjectorService.InjectAll(urlPattern, artist, title: title);
 
         logger.LogDebug("Fetching results for {Artist} - {Title} from {SearchUrl}", artist, title, searchUrl);
-        IFlurlResponse searchResponse = await searchUrl.GetAsync(cancellationToken: cancellationToken);
+        IFlurlResponse searchResponse = await searchUrl.WithHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0").GetAsync(cancellationToken: cancellationToken);
 
         if (searchResponse.StatusCode != (int)HttpStatusCode.OK)
             logger.LogWarning("Got status code {StatusCode} {StatusCodeName} from {SearchUrl}", searchResponse.StatusCode, (HttpStatusCode)searchResponse.StatusCode, searchUrl);
 
         string searchContent = await searchResponse.GetStringAsync();
+
+        if (searchContent.Contains("Please solve this CAPTCHA in helping us understand your behavior to grant access"))
+        {
+            logger.LogWarning("CAPTCHA needed. Need to throttle provider Shironet provider");
+            return Enumerable.Empty<ShironetSongSearchResult>();
+        }
+
         MatchCollection matches = SongsPattern().Matches(searchContent);
         logger.LogDebug("Found {AmountOfResults} results for {Artist} - {Title}", matches.Count, artist, title);
 
